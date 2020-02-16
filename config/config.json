@@ -1,0 +1,12 @@
+{
+    "database": {
+        "user": "website",
+        "host": "localhost",
+        "database": "website",
+        "password": null,
+        "port": 5432
+    },
+    "tokens": {
+        "twitter": "CHANGE_ME_IN_PROD"
+    }
+}

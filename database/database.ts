@@ -19,7 +19,7 @@ export default class Database {
     private client: Client;
 
     constructor(config?: ClientConfig) {
-        this.client = new Client(config || JSON.parse(fs.readFileSync('config/database.json', 'utf8')));
+        this.client = new Client(config || JSON.parse(fs.readFileSync('config/config.json', 'utf8')).database);
         this.client.connect();
     }
 

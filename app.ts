@@ -5,15 +5,16 @@ import path from 'path';
 import bodyParser from 'body-parser';
 import expressValidator from 'express-validator';
 import logger from 'morgan';
-import axios, {AxiosResponse} from 'axios';
+import axios from 'axios';
 import log4js from 'log4js';
 import fs from 'fs';
 
 import Database from './database/database';
 
+const config = JSON.parse(fs.readFileSync('config/config.json', 'utf8'));
+
 const app = express();
-const db = new Database();
-const tokens = JSON.parse(fs.readFileSync('config/tokens.json', 'utf8'));
+const db = new Database(config.database);
 
 /** Configuration for logger. */
 log4js.configure({
@@ -47,7 +48,7 @@ app.get('/', async (req: Request, res: Response) => {
     LOGGER.info('Fetching tweets...');
     const url = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
         +'?screen_name=enucs&exclude_replies=true&include_rts=false&count=3';
-    const bearerToken = 'bearer ' + tokens.twitter;
+    const bearerToken = 'bearer ' + config.tokens.twitter;
     const instance = await axios({ url: url, headers: { 'Authorization': bearerToken } });
 
     let tweets = instance.data.map((tweet: any) => {
