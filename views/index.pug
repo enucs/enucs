@@ -4,9 +4,9 @@ block content
     img.home-banner(src='/images/hacknapier.png')
     h1.event-date March 7-8, 2020
     
-    h2.social-feed-title Latest Tweets
-    .twitter-card-container
-        if tweets
+    if tweets
+        h2.social-feed-title Latest Tweets
+        .twitter-card-container
             each t in tweets
                 .twitter-card
                     span#handle(style='font-size: 16px;text-transform: uppercase;color: #555;')= t.handle

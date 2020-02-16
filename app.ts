@@ -22,7 +22,7 @@ log4js.configure({
         errors: { type: 'file', filename: 'enucs.log' },
         console: { type: 'console' }
     },
-    categories: { default: { appenders: ['console'], level: 'all' } }
+    categories: { default: { appenders: ['errors'], level: 'error' } }
 });
 
 /** The logger. */
@@ -45,26 +45,33 @@ app.use(expressValidator());
 
 /** Index page */
 app.get('/', async (req: Request, res: Response) => {
-    LOGGER.info('Fetching tweets...');
     const url = 'https://api.twitter.com/1.1/statuses/user_timeline.json'
         +'?screen_name=enucs&exclude_replies=true&include_rts=false&count=3';
     const bearerToken = 'bearer ' + config.tokens.twitter;
-    const instance = await axios({ url: url, headers: { 'Authorization': bearerToken } });
 
-    let tweets = instance.data.map((tweet: any) => {
-        return {
-            body: tweet.text,
-            created_at: new Date(tweet.created_at)
-                .toLocaleString('en-GB', {
-                    day: '2-digit',
-                    month: 'short',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                }),
-            handle: tweet.user.screen_name
-        };
-    });
+    let tweets;
+
+    try {
+        const instance = await axios({ url: url, headers: { 'Authorization': bearerToken } })
+
+        tweets = instance.data.map((tweet: any) => {
+            return {
+                body: tweet.text,
+                created_at: new Date(tweet.created_at)
+                    .toLocaleString('en-GB', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }),
+                handle: tweet.user.screen_name
+            };
+        });
+
+    } catch(e) {
+        LOGGER.error('Error fetching tweets: ', e.message);
+    }
 
     let events = await db.getFutureEvents(6);
 
