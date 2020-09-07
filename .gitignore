@@ -2,6 +2,7 @@
 config/
 
 *.map
+.pub 
 
 # Ignore compiled files
 *.css
