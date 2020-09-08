@@ -3,6 +3,7 @@ config/
 
 *.map
 .pub 
+tokens.json
 
 # Ignore compiled files
 *.css
